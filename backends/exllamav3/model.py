@@ -1217,7 +1217,9 @@ class ExllamaV3Container:
                 draft_cache=self.draft_cache,
                 tokenizer=self.tokenizer,
                 max_batch_size=self.max_batch_size,
-                max_chunk_size=self.chunk_size,
+                # TABBY_EXL3_GENERATOR_CHUNK (temporary, 2026-09-27): a generator chunk larger than the load chunk, so the
+                # DeepSeek-V4.1 pipelined prefill gets several sub-chunks per call. Unset = the load chunk, as before.
+                max_chunk_size=int(__import__("os").environ.get("TABBY_EXL3_GENERATOR_CHUNK") or self.chunk_size),
                 recurrent_cache_size=config.memory.sysmem_recurrent_cache * 1024**2,
                 cpu_cache_size=config.memory.sysmem_kv_cache * 1024**2,
                 num_draft_tokens=self.draft_num_tokens,
